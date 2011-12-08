@@ -3,15 +3,12 @@ package org.odoko.pipeline.config;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.odoko.pipeline.locators.Locator;
-import org.odoko.pipeline.pipelines.Pipeline;
-
 public abstract class AbstractConfiguration implements Configuration {
 
 	private Map<String, String> properties = new HashMap<String, String>();
 	private Map<String, ConfiguredComponent> components = new HashMap<String, ConfiguredComponent>();
 	private Map<String, ConfiguredComponent> locators = new HashMap<String, ConfiguredComponent>();
-	private Map<String, Pipeline> pipelines = new HashMap<String, Pipeline>();
+	private Map<String, ConfiguredPipeline> pipelines = new HashMap<String, ConfiguredPipeline>();
 	
 	@Override
 	public void setProperty(String name, String value) {
@@ -34,7 +31,7 @@ public abstract class AbstractConfiguration implements Configuration {
 	}
 
 	@Override
-	public Pipeline getPipeline(String name) {
+	public ConfiguredPipeline getPipeline(String name) {
 		return pipelines.get(name);
 	}
 
@@ -44,7 +41,7 @@ public abstract class AbstractConfiguration implements Configuration {
 	}
 
 	@Override
-	public void addPipeline(String name, Pipeline pipeline) {
+	public void addPipeline(String name, ConfiguredPipeline pipeline) {
 		this.pipelines.put(name, pipeline);
 	}
 

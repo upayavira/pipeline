@@ -1,10 +1,10 @@
 package org.odoko.pipeline.config;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
-import org.odoko.pipeline.pipelines.Pipeline;
 
 public class YamlConfigurationTest {
 	
@@ -15,12 +15,14 @@ public class YamlConfigurationTest {
 		
 		ConfiguredComponent component = config.getComponent("mocktransformer");
 		ConfiguredComponent locator = config.getLocator("default");
-		Pipeline pipeline = config.getPipeline("default");
+		ConfiguredPipeline pipeline = config.getPipeline("default");
+		List<ConfiguredComponent> pipelineComponents = pipeline.getComponents();
 		
-		assertEquals(component.getClassName(), "org.odoko.pipeline.transformers.MockTransformer");
-		assertEquals(locator.getType(), "locator");
-		assertEquals(locator.getProperty("url"), "http://www.somesite.com/feed.rss");
-		assertEquals(pipeline.getTransformers().size(), 1);
+		assertEquals("org.odoko.pipeline.transformers.MockTransformer", component.getClassName());
+		assertEquals("locator", locator.getType());
+		assertEquals("http://www.somesite.com/feed.rss", locator.getProperty("url"));
+		assertEquals(3, pipelineComponents.size());
+		assertEquals("someapp.com", pipelineComponents.get(2).getProperty("dispatchhost"));
 	}
 
 }

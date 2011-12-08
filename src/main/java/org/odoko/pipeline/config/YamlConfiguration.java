@@ -3,6 +3,7 @@ package org.odoko.pipeline.config;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -75,9 +76,39 @@ public class YamlConfiguration extends AbstractConfiguration {
 		addLocator(key, component);
 	}
 
-	private void parsePipeline(String key, Object value) {
-		// TODO Auto-generated method stub
-		
+	private void parsePipeline(String key, Object value) throws ConfigurationException {
+		key = key.substring("pipeline.".length());
+		ConfiguredPipeline pipeline = new ConfiguredPipeline(key);
+	    if (value instanceof ArrayList) {
+	    	for (Object object : (List)value) {
+	    		pipeline.addComponents(parsePipelineComponent(object));
+	    	}
+	    } else {
+	    	throw new ConfigurationException("Unexpected child of " + key);
+	    }
+	    addPipeline(key, pipeline);
 	}
 
+	private ConfiguredComponent parsePipelineComponent(Object value) throws ConfigurationException {
+		ConfiguredComponent component = new ConfiguredComponent();
+		if (value instanceof String) {
+			component.setName((String)value);
+			return component;
+		} else if (value instanceof HashMap) {
+			HashMap map = (HashMap) value;
+			for (String mapKey : (Set<String>)(map.keySet())) {
+				Object mapValue = map.get(mapKey);
+				if (mapValue == null) {
+					component.setName(mapKey);
+				} else if (mapValue instanceof String) {
+					component.addProperty(mapKey, (String)mapValue);
+				} else {
+					throw new ConfigurationException("Unexpected property for component called " + mapKey + ": " + mapValue);
+				}
+			}
+		} else {
+			throw new ConfigurationException("Unexpected property: " + value);
+		}
+		return component;
+	}
 }

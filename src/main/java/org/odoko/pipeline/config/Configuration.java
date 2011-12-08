@@ -9,8 +9,8 @@ import org.odoko.pipeline.pipelines.Pipeline;
 public interface Configuration {
 
 	public void parse(String filename) throws IOException, ConfigurationException;
-	public Pipeline getPipeline(String name);
-	public void addPipeline(String name, Pipeline pipeline);
+	public ConfiguredPipeline getPipeline(String name);
+	public void addPipeline(String name, ConfiguredPipeline pipeline);
 	public ConfiguredComponent getComponent(String string);
 	public ConfiguredComponent getLocator(String string);
 	public void addComponent(String name, ConfiguredComponent component);

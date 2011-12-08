@@ -13,6 +13,8 @@ public class ConfiguredComponent {
 	public ConfiguredComponent(String name) {
 		this.name = name;
 	}
+	public ConfiguredComponent() {
+	}
 	public String getClassName() {
 		return className;
 	}
