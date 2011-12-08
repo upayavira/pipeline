@@ -1,0 +1,19 @@
+property.name: property.value
+
+component.mocklocator: 
+  class: org.odoko.pipeline.locators.MockLocator
+  locatortype: superduper
+component.mockcollector: org.odoko.pipeline.collectors.MockCollector
+component.mocktransformer: org.odoko.pipeline.transformers.MockTransformer
+component.mockdispatcher: org.odoko.pipeline.dispatchers.MockDispatcher
+
+locator.default: 
+  type: mocklocator
+  url: http://www.somesite.com/feed.rss
+  pipeline: default
+  
+pipeline.default:
+  - mockcollector
+  - mocktransformer
+  - mockdispatcher:
+    dispatchhost: someapp.com

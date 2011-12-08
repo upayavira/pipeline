@@ -1,5 +1,8 @@
 package org.odoko.pipeline.pipelines;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.odoko.pipeline.model.Asset;
 
 public abstract class AbstractTransformer implements Consumer, Producer {
@@ -7,7 +10,19 @@ public abstract class AbstractTransformer implements Consumer, Producer {
 	private String incomingContentType;
 	private String outgoingContentType;
 	private Consumer nextComponent;
+
+	private Map<String, String>properties = new HashMap<String, String>();
 	
+	@Override
+	public void setProperty(String name, String value) {
+		properties.put(name, value);
+	}
+
+	@Override
+	public Object getProperty(String name) {
+		return properties.get(name);
+	}
+
 	protected void setOutgoingContentType(String contentType) {
 		this.outgoingContentType = contentType;
 	}

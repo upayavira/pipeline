@@ -8,4 +8,5 @@ import org.odoko.pipeline.pipelines.Producer;
 public interface Locator extends Producer {
 
 	public List<Asset> locate();
+
 }

@@ -1,0 +1,112 @@
+- a
+- b
+- cdispatch.host: p-fdxb02.lga2.mochila.com
+dispatch.publication: pcworldcom
+dispatch.username: buyer@idg.com
+dispatch.password: microsite
+#dispatch.host: localhost
+#dispatch.publication: SnapTimes
+#dispatch.username: snaptimes1
+#dispatch.password: snaptimes1
+email.recipients: aagate@mochila.com
+
+locator.default: httplocator
+  #url: http://feeds.pcworld.com/pcworld/latestnews  
+  urllistfile: resources/pcworld/pcworld-urllist.xml
+  urlxpath: //urllist/url/text()
+  uri: ${url}*${now.timestamp}
+  archive: ${core.archive}/${now.path}/${basename}
+
+pipeline.default:
+  httpcollector
+  regexreplace
+    fromPattern: \&amp;amp;
+    replaceBy: &amp;
+  regexreplace
+    fromPattern: \&amp;lt;
+    replaceBy: <
+  regexreplace
+    fromPattern: \&amp;gt;
+    replaceBy: >
+  regexreplace
+    fromPattern: \&amp;quot;
+    replaceBy: &quot;
+  stringencoder
+    escapeCP1252: yes
+    escapeHtmlEntities: yes
+    escapeChars: yes
+    toEncoding: ascii
+  xmlparser
+  reverserssitemlist
+  propertysetter
+    propertyName: assetdispatchpub
+    propertyValue: //urllist/url[normalize-space(./text())='%{assetsourcekey}']/@pubID
+    propertyType: assetheader
+    defaultValue: ${dispatch.publication}
+    xmlmapfile: resources/pcworld/pcworld-urllist.xml
+  propertysetter
+    propertyName: updatechannelid
+    propertyValue: //urllist/url[normalize-space(./text())='%{assetsourcekey}']/@updateChannelID
+    propertyType: assetheader
+    defaultValue: 13551
+    xmlmapfile: resources/pcworld/pcworld-urllist.xml
+  xpathbrancher
+    xpath: /rss/item
+    urlxpath: ./link/text()
+    datexpath: ./pubDate/text()
+    pipeline: article
+    uri: ${url}*${now.timestamp}
+    archive: ${core.archive}/${now.path}/${basename}
+
+pipeline.article:
+  httpcollector
+   property: payload		
+  htmlparser
+    sourceAt: payload
+  payloadcontentgrouper
+  xslttransformer
+    xslt: resources/pcworld/pcworld-article.xsl
+  statussetter
+    propertyValue: active
+  docidkeyidentifier
+  xpathtruncator
+    xpath: /nitf/head/title
+    words: 20
+  adsupportsetter
+  nitfdatemanipulator
+  nitfvalidator
+  categorynormalizer
+    map: resources/pcworld/pcworld-categorymap.txt
+    default: j
+  addinform
+  xslttransformer	
+    xslt: resources/pcworld/pcworld-stripunsupportedelements.xsl
+  cleanparagraphs	
+  #exclude assets with title "Presented By"
+  pcworldnopassfilter	
+  simplebrancher
+    toPipelines: postarticle,postchannelupdate
+
+pipeline.postarticle:
+  #FIXME: identitytransform - convert Element to ElementTree	
+  identitytransform
+  nitfvalidator
+  articlevalidator
+  articledispatcher 
+    publication: %{assetdispatchpub}
+    username: ${dispatch.username}
+    password: ${dispatch.password}
+
+pipeline.postchannelupdate:
+  #FIXME: identitytransform - convert Element to ElementTree	
+  identitytransform
+  nitfvalidator
+  articlevalidator
+  channelupdater
+    channelId: %{updatechannelid}
+    publication: %{assetdispatchpub}
+    #5-articles + 1 image
+    maxChannelItems: 6
+    username: ${dispatch.username}
+    password: ${dispatch.password}
+    

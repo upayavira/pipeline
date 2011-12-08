@@ -2,7 +2,7 @@ package org.odoko.pipeline.pipelines;
 
 import org.odoko.pipeline.model.Asset;
 
-public interface Producer {
+public interface Producer extends Component {
 
 	public void wire(Consumer consumer);
 	
