@@ -7,6 +7,7 @@ import org.odoko.pipeline.config.Configuration;
 import org.odoko.pipeline.config.ConfigurationException;
 import org.odoko.pipeline.config.ConfiguredComponent;
 import org.odoko.pipeline.config.ConfiguredPipeline;
+import org.odoko.pipeline.config.VariableResolver;
 import org.odoko.pipeline.locators.Locator;
 
 public class PipelineBuilder {
@@ -34,12 +35,12 @@ public class PipelineBuilder {
 			Locator locator = (Locator)locatorClass.newInstance();
 			if (rootLocator != null) {
 				for (String name: rootLocator.getProperties().keySet()) {
-					locator.setProperty(name, rootLocator.getProperties().get(name));
+					locator.setProperty(name, VariableResolver.resolve(configuration, rootLocator.getProperties().get(name)));
 				}
 			}
 			Map<String, String> properties = configuredLocator.getProperties();
 			for (String name : properties.keySet()) {
-				locator.setProperty(name, properties.get(name));
+				locator.setProperty(name, VariableResolver.resolve(configuration, properties.get(name)));
 			}
 			return locator;
 		} catch (ClassNotFoundException e) {
@@ -63,12 +64,12 @@ public class PipelineBuilder {
 			Component component = (Component)componentClass.newInstance();
 			if (rootComponent != null) {
 				for (String name: rootComponent.getProperties().keySet()) {
-					component.setProperty(name, rootComponent.getProperties().get(name));
+					component.setProperty(name, VariableResolver.resolve(configuration, rootComponent.getProperties().get(name)));
 				}
 			}
 			Map<String, String> properties = configuredComponent.getProperties();
 			for (String name : properties.keySet()) {
-				component.setProperty(name, properties.get(name));
+				component.setProperty(name, VariableResolver.resolve(configuration, properties.get(name)));
 			}
 			return component;
 		} catch (ClassNotFoundException e) {

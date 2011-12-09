@@ -52,4 +52,17 @@ public class ConfiguredPipelineTest {
 		assertEquals("http://www.somesite.com/feed.rss", locator.getProperty("url"));
 		assertEquals("superduper", locator.getProperty("locatortype"));
 	}
+	
+	@Test
+	public void testMockPipelineBuiltFromYamlConfigConfiguredWithPropertiesAndVariableSubstitution() throws IOException, ConfigurationException {
+		Configuration config = new YamlConfiguration();
+		config.parse("src/test/resources/config/sample2.yaml");
+		PipelineBuilder builder = new PipelineBuilder();
+		Pipeline pipeline = builder.build(config, config.getPipeline("default"));
+		
+		List<Component> components = pipeline.getComponents(); 
+		MockDispatcher dispatcher = (MockDispatcher)components.get(components.size()-1);
+	    assertEquals("app.odoko.org", dispatcher.getProperty("dispatch.host")); 
+
+	}
 }
