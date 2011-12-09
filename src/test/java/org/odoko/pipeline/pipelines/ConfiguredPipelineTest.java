@@ -37,4 +37,19 @@ public class ConfiguredPipelineTest {
 		assertEquals("First asset is not upper-case, transformer did not work", "CONTENT FROM URL HTTP://WWW.ODOKO.ORG/ARTICLE-0", finalAssets.get(0).getValue());
 	}
 	
+	@Test
+	public void testMockPipelineBuiltFromYamlConfigurationConfiguredWithProperties() throws IOException, ConfigurationException {
+		Configuration config = new YamlConfiguration();
+		config.parse("src/test/resources/config/sample1.yaml");
+		PipelineBuilder builder = new PipelineBuilder();
+		Pipeline pipeline = builder.build(config, config.getPipeline("default"));
+		
+		List<Component> components = pipeline.getComponents(); 
+		MockDispatcher dispatcher = (MockDispatcher)components.get(components.size()-1);
+	    assertEquals("someapp.com", dispatcher.getProperty("dispatchhost")); 
+
+	    Locator locator = builder.buildLocator(config, config.getLocator("default"));
+		assertEquals("http://www.somesite.com/feed.rss", locator.getProperty("url"));
+		assertEquals("superduper", locator.getProperty("locatortype"));
+	}
 }

@@ -24,13 +24,19 @@ public class PipelineBuilder {
 	
 	public Locator buildLocator(Configuration configuration, ConfiguredComponent configuredLocator) throws ConfigurationException {
 		try {
+			ConfiguredComponent rootLocator = null;
 			String className = configuredLocator.getClassName();
 			if (className == null) {
-				ConfiguredComponent rootLocator = configuration.getComponent(configuredLocator.getProperty("component"));
+				rootLocator = configuration.getComponent(configuredLocator.getProperty("component"));
 				className = rootLocator.getClassName();
 			}
 			Class locatorClass = Class.forName(className);
 			Locator locator = (Locator)locatorClass.newInstance();
+			if (rootLocator != null) {
+				for (String name: rootLocator.getProperties().keySet()) {
+					locator.setProperty(name, rootLocator.getProperties().get(name));
+				}
+			}
 			Map<String, String> properties = configuredLocator.getProperties();
 			for (String name : properties.keySet()) {
 				locator.setProperty(name, properties.get(name));
@@ -47,13 +53,19 @@ public class PipelineBuilder {
 	
 	private Component buildComponent(Configuration configuration, ConfiguredComponent configuredComponent) throws ConfigurationException {
 		try {
+			ConfiguredComponent rootComponent = null;
 			String className = configuredComponent.getClassName();
 			if (className == null) {
-				ConfiguredComponent rootComponent = configuration.getComponent(configuredComponent.getName());
+				rootComponent = configuration.getComponent(configuredComponent.getName());
 				className = rootComponent.getClassName();
 			}
 			Class componentClass = Class.forName(className);
 			Component component = (Component)componentClass.newInstance();
+			if (rootComponent != null) {
+				for (String name: rootComponent.getProperties().keySet()) {
+					component.setProperty(name, rootComponent.getProperties().get(name));
+				}
+			}
 			Map<String, String> properties = configuredComponent.getProperties();
 			for (String name : properties.keySet()) {
 				component.setProperty(name, properties.get(name));
