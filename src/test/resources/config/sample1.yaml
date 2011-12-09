@@ -8,7 +8,7 @@ component.mocktransformer: org.odoko.pipeline.transformers.MockTransformer
 component.mockdispatcher: org.odoko.pipeline.dispatchers.MockDispatcher
 
 locator.default: 
-  type: mocklocator
+  component: mocklocator
   url: http://www.somesite.com/feed.rss
   pipeline: default
   

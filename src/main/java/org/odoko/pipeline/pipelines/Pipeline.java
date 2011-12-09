@@ -4,58 +4,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.odoko.pipeline.collectors.Collector;
-import org.odoko.pipeline.dispatchers.Dispatcher;
-import org.odoko.pipeline.locators.Locator;
 import org.odoko.pipeline.model.Asset;
 
 public class Pipeline {
 
-	private Locator locator;
-	private Collector collector;
-	private List<Transformer> transformers = new ArrayList<Transformer>();
-	private Dispatcher dispatcher;
-	public Locator getLocator() {
-		return locator;
+	private List<Component> components = new ArrayList<Component>();
+	
+	public List<Component> getComponents() {
+		return components;
 	}
 	
-	public void setLocator(Locator locator) {
-		this.locator = locator;
+	public void addComponent(Component component) {
+		this.components.add(component);
 	}
 	
-	public Collector getCollector() {
-		return collector;
-	}
-	
-	public void setCollector(Collector collector) {
-		this.collector = collector;
-	}
-	
-	public List<Transformer> getTransformers() {
-		return transformers;
-	}
-	
-	public void addTransformer(Transformer transformer) {
-		this.transformers.add(transformer);
-	}
-	
-	public Dispatcher getDispatcher() {
-		return dispatcher;
-	}
-	
-	public void setDispatcher(Dispatcher dispatcher) {
-		this.dispatcher = dispatcher;
-	}
-	
+	/* Assumptions are made in this method about whether classes are consumers
+	 * and/or producers. These will have already been validated by the 
+	 * PipelineBuilder
+	 */
 	public void wire() {
-		Producer previousComponent = this.collector;
-		for (Transformer transformer : transformers) {
-			previousComponent.wire(transformer);
-			previousComponent = transformer;
+		Component previousComponent = null;
+		for (Component component: components) {
+			if (previousComponent != null) {
+				Producer producer = (Producer)previousComponent;
+				Consumer consumer = (Consumer)component;
+  			    producer.wire(consumer);
+			}
+			previousComponent = component;
 		}
-		previousComponent.wire(dispatcher);
 	}
 	
 	public void process(Asset asset) {
-		this.collector.process(asset);
+		Collector collector = (Collector)components.get(0);
+		collector.process(asset);
 	}
 }

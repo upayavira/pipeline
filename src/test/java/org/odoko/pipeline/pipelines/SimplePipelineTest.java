@@ -21,9 +21,8 @@ public class SimplePipelineTest {
 		Locator locator = new MockLocator();
 		Collector collector = new MockCollector();
 		MockDispatcher dispatcher = new MockDispatcher();
-		pipeline.setLocator(locator);
-		pipeline.setCollector(collector);
-		pipeline.setDispatcher(dispatcher);
+		pipeline.addComponent(collector);
+		pipeline.addComponent(dispatcher);
 		
 		pipeline.wire();
 		List<Asset> assets = locator.locate();
@@ -43,10 +42,9 @@ public class SimplePipelineTest {
 		Collector collector = new MockCollector();
 		Transformer transformer = new MockTransformer();
 		MockDispatcher dispatcher = new MockDispatcher();
-		pipeline.setLocator(locator);
-		pipeline.setCollector(collector);
-		pipeline.addTransformer(transformer);
-		pipeline.setDispatcher(dispatcher);
+		pipeline.addComponent(collector);
+		pipeline.addComponent(transformer);
+		pipeline.addComponent(dispatcher);
 		
 		pipeline.wire();
 		List<Asset> assets = locator.locate();

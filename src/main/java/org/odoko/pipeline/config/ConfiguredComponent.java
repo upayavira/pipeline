@@ -33,6 +33,9 @@ public class ConfiguredComponent {
 	public String getProperty(String name) {
 		return this.properties.get(name);
 	}
+	public Map<String, String> getProperties() {
+		return this.properties;
+	}
 	public void setType(String type) {
 		this.type = type;
 	}
