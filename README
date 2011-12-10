@@ -107,3 +107,9 @@ a dispatcher should actually dispatch. Many of these are likely
 useful while developing pipelines (marking assets as 'seen' 
 is very irritating when constantly running a pipeline for
 development purposes).
+
+===================================
+Licence: This code is licensed under the Apache License 2.0.
+
+Proper licence attribution forthcoming.
+
