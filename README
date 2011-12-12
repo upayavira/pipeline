@@ -4,7 +4,70 @@ This tool is a simple configurable pipeline content ingestion engine.
 
 See src/test/resources/config for sample configuration examples.
 
-More documentation will be forthcoming.
+== Genesis ==
+This tool is a conversion into Java of an original system written in
+Python, that has been handling 50+ feeds actively for a few years 
+at one location.
+
+== The Pipeline Concept ==
+The Odoko Pipeline toolset has two levels of functionality -
+lightweight and heavyweight pipelines. The latter is less mature, and 
+likely far less implemented (if at all).
+
+= Lightweight pipelines =
+Lightweight pipelines are intended for simple sequences of actions,
+e.g. XSLT transforms and regular expression replacements, where there
+are no dependencies on external systems that might cause bottlenecks
+in pipeline stages. 
+
+In such a pipeline, components are directly wired together in sequence,
+and assets are passed from one component to the next for processing.
+
+= Heavyweight pipelines =
+A heavyweight pipeline is a sequence of lightweight pipelines, joined
+together with a queue. Rather than dispatching an asset to a destination
+system, a pipeline may place the asset into a queue for further
+processing by another pipeline that has been assigned to that queue.
+
+This approach is intended to handle scaling - queues can be distributed
+across hosts, in a multitude of ways.
+
+= Core concepts =
+A pipeline system starts with a 'locator'. This component will locate
+resources for ingestion. This may involve, for example, looking at the 
+files on a disk, or on an FTP server. 
+
+These are then passed to a named pipeline. A pipeline is made up of a
+'collector', followed by zero or more 'transformers', followed by a
+'dispatcher'. The collector gets the actual resource from the data
+source, and passes it unchanged to the next component in the pipeline.
+
+Transformers can, of course, transform the content, be it XSLT, 
+regular expression replace, encoding corrections, and so on.
+
+Finally, the dispatcher is responsible for sending the end result
+to its destination. This could be by uploading via FTP, posting to
+an HTTP server, or such.
+
+== So Far ==
+This system is at a very early stage, but given many of the ideas are
+already formed in the Python version, for some period, development could
+be (time permitting) relatively fast.
+
+So far, the basic lightweight pipeline infrastructure is in place.
+
+Next, a sample use case will be implemented, ingesting content from the 
+BBC News RSS feed, and pushing it to an Apache Solr index.
+
+Once this is done, basic infrastructure for 'branching' will be added.
+This will require 'heavyweight pipelines' as branching is effectively
+placing an asset into a queue for another pipeline to handle.
+
+To show this in use, the above sample app will add a branch so that 
+the thumbnails can also be indexed into Solr, allowing a user to
+search for images as well as articles.
+
+And then, well, there's lots more to come after that!
 
 == To do ==
 
@@ -107,6 +170,11 @@ a dispatcher should actually dispatch. Many of these are likely
 useful while developing pipelines (marking assets as 'seen' 
 is very irritating when constantly running a pipeline for
 development purposes).
+
+= Scaling =
+It is intended that a lot of the above will be wired into 
+Apache Hadoop as the engine for scaling. Hadoop will be 
+entirely optional.
 
 ===================================
 Licence: This code is licensed under the Apache License 2.0.
