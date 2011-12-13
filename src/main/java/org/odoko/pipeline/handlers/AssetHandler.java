@@ -6,8 +6,9 @@ import org.odoko.pipeline.model.Asset;
 
 public interface AssetHandler {
 
-	public void addAssets(List<Asset> assets);
-	public void addAsset(Asset asset);
-	public boolean hasNext();
-	public Asset nextAsset();
+	public void addAssets(String queue, List<Asset> assets);
+	public void addAsset(String queue, Asset asset);
+	public boolean hasNext(String queue);
+	public Asset nextAsset(String queue);
+	public List<String> getQueueNames();
 }

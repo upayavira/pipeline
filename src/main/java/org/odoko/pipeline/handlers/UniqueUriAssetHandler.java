@@ -39,23 +39,27 @@ public class UniqueUriAssetHandler extends SimpleAssetHandler {
 	}
 	
 	@Override
-	public void addAssets(List<Asset> assets) {
+	public void addAssets(String queue, List<Asset> assets) {
 		for (Asset asset : assets) {
-			addAsset(asset);
+			addAsset(queue, asset);
 		}
 	}
 
 	@Override
-	public void addAsset(Asset asset) {
+	public void addAsset(String queue, Asset asset) {
 		String uri = asset.getUri();
-		if (isUnique(uri)) {
+		if (isUnique(queue, uri)) {
 			writer.println(uri);
-			seenUris.add(uri);
-			super.addAsset(asset);
+			seenUris.add(getSeenKey(queue, uri));
+			super.addAsset(queue, asset);
 		}
 	}
 
-	private boolean isUnique(String uri) {
-		return !seenUris.contains(uri);
+	private boolean isUnique(String queue, String uri) {
+		return !seenUris.contains(getSeenKey(queue, uri));
+	}
+	
+	private String getSeenKey(String queue, String uri) {
+		return queue + ":" + uri;
 	}
 }

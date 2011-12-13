@@ -14,6 +14,7 @@ import org.odoko.pipeline.model.Asset;
 public class UniqueUriAssetHandlerTest {
 
 	private static final String DB_FILE = "target/database.tmp";
+	private static final String DEFAULT_QUEUE = "default";
 
 	@Before
 	public void setUp() {
@@ -32,13 +33,13 @@ public class UniqueUriAssetHandlerTest {
 		asset2.setValue("ASSET2");
 		asset1.setUri("http://app.odoko.co.uk/unique");
 		asset2.setUri("http://app.odoko.co.uk/unique");
-		handler.addAsset(asset1);
-		handler.addAsset(asset2);
+		handler.addAsset(DEFAULT_QUEUE, asset1);
+		handler.addAsset(DEFAULT_QUEUE, asset2);
 		
 		int i=0;
-		while (handler.hasNext()) {
+		while (handler.hasNext(DEFAULT_QUEUE)) {
 			i++;
-			handler.nextAsset();
+			handler.nextAsset(DEFAULT_QUEUE);
 		}
 		assertEquals("Handler should only have one asset, as the two URIs are the same", 1, i);
 	}
@@ -54,12 +55,12 @@ public class UniqueUriAssetHandlerTest {
 		Asset asset1 = new Asset();
 		asset1.setValue("ASSET1");
 		asset1.setUri("http://app.odoko.co.uk/unique");
-		handler.addAsset(asset1);
+		handler.addAsset(DEFAULT_QUEUE, asset1);
 		
 		int i=0;
-		while (handler.hasNext()) {
+		while (handler.hasNext(DEFAULT_QUEUE)) {
 			i++;
-			handler.nextAsset();
+			handler.nextAsset(DEFAULT_QUEUE);
 		}
 		assertEquals("Handler should have no assets set, as the asset has been seen before", 0, i);
 

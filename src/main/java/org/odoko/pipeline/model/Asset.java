@@ -4,10 +4,28 @@ import java.util.Map;
 
 public class Asset {
 
+	public static enum AssetState {
+		NEW,
+		ACTIVE,
+		SUCCESS,
+		FAILED,
+		BRANCHED,
+		CANCELLED,
+	}
+
 	private String contentType;
 	private String uri;
 	private Object value;
 	private Map<String, Payload> payloads;
+	private AssetState state = AssetState.NEW;
+	
+	public void setState(AssetState state) {
+		this.state = state;
+	}
+	
+	public AssetState getState() {
+		return this.state;
+	}
 	
 	public String getUri() {
 		return uri;

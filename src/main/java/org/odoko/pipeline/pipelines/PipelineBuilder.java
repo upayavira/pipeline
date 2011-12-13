@@ -71,6 +71,7 @@ public class PipelineBuilder {
 			for (String name : properties.keySet()) {
 				component.setProperty(name, VariableResolver.resolve(configuration, properties.get(name)));
 			}
+			component.initialise(configuration);
 			return component;
 		} catch (ClassNotFoundException e) {
 			throw new ConfigurationException("Cannot instantiate " + configuredComponent.getClassName());
