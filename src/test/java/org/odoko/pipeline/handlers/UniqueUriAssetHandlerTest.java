@@ -48,7 +48,7 @@ public class UniqueUriAssetHandlerTest {
 	public void testUniqueAssetsNotRepeatedWhenLoggedInDatabase() throws IOException {
 		File db = new File(DB_FILE);
 		PrintWriter writer = new PrintWriter(db);
-		writer.println("http://app.odoko.co.uk/unique");
+		writer.println("default:http://app.odoko.co.uk/unique");
 		writer.close();
 
 		AssetHandler handler = new UniqueUriAssetHandler(DB_FILE);
