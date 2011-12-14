@@ -1,0 +1,27 @@
+site.domain: odoko.org
+host: app
+dispatch.host: ${host}.${site.domain}
+
+component.mocklocator: 
+  class: org.odoko.pipeline.locators.MockLocator
+  locatortype: superduper
+component.mockcollector: org.odoko.pipeline.collectors.MockCollector
+component.mocktransformer: org.odoko.pipeline.transformers.MockTransformer
+component.mockdispatcher: org.odoko.pipeline.dispatchers.MockDispatcher
+component.mockbrancher: org.odoko.pipeline.branchers.MockBrancher
+component.mockbreakingtransformer: org.odoko.pipeline.transformers.MockBreakingTransformer
+
+locator.default: 
+  component: mocklocator
+  url: http://www.somesite.com/feed.rss
+  pipeline: default
+  
+pipeline.default:
+  - mockcollector:
+    test-dir: test/blah
+  - mocktransformer
+  - mockbreakingtransformer
+  - mockdispatcher:
+    dispatch.host: ${dispatch.host}
+    assertions: assertions.yaml
+  
