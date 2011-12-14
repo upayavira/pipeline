@@ -14,6 +14,7 @@ public class PipelineBuilder {
 
 	public Pipeline build(Configuration configuration, ConfiguredPipeline configuredPipeline) throws ConfigurationException {
 		Pipeline pipeline = new Pipeline();
+		pipeline.setName(configuredPipeline.getName());
 		List<ConfiguredComponent> configuredComponents = configuredPipeline.getComponents();
 		for (ConfiguredComponent configuredComponent : configuredComponents) {
 			Component component = buildComponent(configuration, configuredComponent);
@@ -72,6 +73,7 @@ public class PipelineBuilder {
 				component.setProperty(name, VariableResolver.resolve(configuration, properties.get(name)));
 			}
 			component.initialise(configuration);
+			component.setLocation(configuredComponent.getName());
 			return component;
 		} catch (ClassNotFoundException e) {
 			throw new ConfigurationException("Cannot instantiate " + configuredComponent.getClassName());

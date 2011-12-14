@@ -1,15 +1,25 @@
 package org.odoko.pipeline.pipelines;
 
+import org.odoko.pipeline.model.Asset;
+
 public abstract class AbstractConsumer extends AbstractComponent implements Consumer {
 
-	private String incomingContentType;
+	private Class incomingClass;
 
-	protected void setIncomingContentType(String contentType) {
-		this.incomingContentType = contentType;
+	protected void setIncomingClass(Class clazz)  {
+		this.incomingClass = clazz;
 	}
 
-	public String getIncomingContentType() {
-		return this.incomingContentType;
+	public Class getIncomingClass() {
+		return this.incomingClass;
 	}
 	
+	@Override
+	public void consumeBase(Asset asset) {
+		if (validate(asset, this.incomingClass)) {
+			consume(asset);
+		} else {
+			fail(asset, "asset is not of type " + incomingClass.getName());
+		}
+	}
 }

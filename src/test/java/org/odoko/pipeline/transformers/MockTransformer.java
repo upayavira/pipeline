@@ -7,8 +7,8 @@ import org.odoko.pipeline.pipelines.Transformer;
 public class MockTransformer extends AbstractTransformer implements Transformer {
 
 	public MockTransformer() {
-		setIncomingContentType("text/plain");
-		setOutgoingContentType("text/plain");
+		setIncomingClass(String.class);
+		setOutgoingClass(String.class);
 	}
 	
 	@Override

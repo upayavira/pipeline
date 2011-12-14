@@ -4,24 +4,24 @@ import org.odoko.pipeline.model.Asset;
 
 public abstract class AbstractTransformer extends AbstractComponent implements Consumer, Producer {
 
-	private String incomingContentType;
-	private String outgoingContentType;
+	private Class incomingClass;
+	private Class outgoingClass;
 	private Consumer nextComponent;
 
-	protected void setOutgoingContentType(String contentType) {
-		this.outgoingContentType = contentType;
+	protected void setOutgoingClass(Class clazz) {
+		this.outgoingClass = clazz;
 	}
 
-	protected void setIncomingContentType(String contentType) {
-		this.incomingContentType = contentType;
+	protected void setIncomingClass(Class clazz) {
+		this.incomingClass = clazz;
 	}
 	
-	public String getOutgoingContentType() {
-		return this.outgoingContentType;
+	public Class getOutgoingClass() {
+		return this.outgoingClass;
 	}
 	
-	public String getIncomingContentType() {
-		return this.incomingContentType;
+	public Class getIncomingClass() {
+		return this.incomingClass;
 	}
 	
 	@Override
@@ -36,12 +36,29 @@ public abstract class AbstractTransformer extends AbstractComponent implements C
 
 	@Override
 	public void next(Asset asset) {
-		this.nextComponent.consume(asset);
+		try {
+			if (validate(asset, this.outgoingClass)) {
+				this.nextComponent.consume(asset);
+			} else {
+				fail(asset, "asset output is not of type " + outgoingClass.getName());
+			}
+		} catch (PipelineException e) {
+			e.addLocation(getLocation());
+			throw e;
+		}
+	}
+		
+
+	@Override
+	public void consumeBase(Asset asset) {
+		if (validate(asset, this.incomingClass)) {
+			consume(asset);
+		} else {
+			fail(asset, "asset is not of type " + incomingClass.getName());
+		}
 	}
 	@Override
 	public void consume(Asset asset) {
-		// TODO Auto-generated method stub
-		
+		next(asset);
 	}
-
 }

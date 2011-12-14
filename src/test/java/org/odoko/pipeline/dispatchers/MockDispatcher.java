@@ -11,7 +11,7 @@ public class MockDispatcher extends AbstractConsumer implements Dispatcher {
 	private List<Asset> assets = new ArrayList<Asset>();
 	
 	public MockDispatcher() {
-		setIncomingContentType("text/plain");
+		setIncomingClass(String.class);
 	}
 
 	@Override

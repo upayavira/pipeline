@@ -11,6 +11,7 @@ public class Pipeline {
 
 	private List<Component> components = new ArrayList<Component>();
 	private AssetHandler handler;
+	private String name;
 	
 	public List<Component> getComponents() {
 		return components;
@@ -56,5 +57,13 @@ public class Pipeline {
 	
 	public AssetHandler getHandler() {
 		return handler;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 }

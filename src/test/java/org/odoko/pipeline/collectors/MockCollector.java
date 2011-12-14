@@ -6,9 +6,8 @@ import org.odoko.pipeline.pipelines.AbstractTransformer;
 public class MockCollector extends AbstractTransformer implements Collector {
 
 	public MockCollector() {
-		setIncomingContentType("text/plain");
-		setOutgoingContentType("text/plain");
-
+		setIncomingClass(void.class);
+		setOutgoingClass(String.class);
 	}
 
 	@Override
