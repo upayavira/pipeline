@@ -2,7 +2,7 @@ package org.odoko.pipeline.pipelines;
 
 import org.odoko.pipeline.model.Asset;
 
-public abstract class AbstractTransformer extends AbstractComponent implements Consumer, Producer {
+public abstract class AbstractTransformer extends AbstractComponent implements Transformer {
 
 	private Class incomingClass;
 	private Class outgoingClass;

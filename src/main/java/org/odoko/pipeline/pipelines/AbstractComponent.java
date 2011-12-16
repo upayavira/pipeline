@@ -36,7 +36,11 @@ public abstract class AbstractComponent implements Component {
 
     @Override
 	public String getLocation() {
-		return this.pipeline.getName() + ":" + location;
+    	if (this.pipeline == null) {
+    		return location;
+    	} else {
+    		return this.pipeline.getName() + ":" + this.location;
+    	}
 	}
 
     @Override
@@ -55,7 +59,7 @@ public abstract class AbstractComponent implements Component {
 	}
 	
 	protected boolean validate(Asset asset, Class clazz){
-		return asset.getValue().getClass().isAssignableFrom(clazz);
+		return clazz.isInstance(asset.getValue());
 	}
 
 }
