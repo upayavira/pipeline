@@ -11,4 +11,5 @@ public interface Component {
 	public void setLocation(String location);
 	public void initialise(Configuration config) throws ConfigurationException;
 	public void fail(Asset asset, String message);
+	public void succeed(Asset asset);
 }

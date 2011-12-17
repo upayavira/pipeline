@@ -3,6 +3,7 @@ package org.odoko.pipeline.pipelines;
 import org.odoko.pipeline.config.Configuration;
 import org.odoko.pipeline.config.ConfigurationException;
 import org.odoko.pipeline.model.Asset;
+import org.odoko.pipeline.model.Asset.AssetState;
 
 public abstract class AbstractComponent implements Component {
 
@@ -40,11 +41,15 @@ public abstract class AbstractComponent implements Component {
 	
 	@Override
 	public void fail(Asset asset, String message) {
-		
+		asset.setState(AssetState.FAILED);
+	}
+	
+	@Override
+	public void succeed(Asset asset) {
+		asset.setState(AssetState.SUCCESS);
 	}
 	
 	protected boolean validate(Asset asset, Class clazz){
 		return clazz.isInstance(asset.getValue());
 	}
-
 }
