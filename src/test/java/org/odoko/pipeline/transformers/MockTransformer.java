@@ -1,10 +1,9 @@
 package org.odoko.pipeline.transformers;
 
 import org.odoko.pipeline.model.Asset;
-import org.odoko.pipeline.pipelines.AbstractTransformer;
-import org.odoko.pipeline.pipelines.Transformer;
+import org.odoko.pipeline.transformers.AbstractTransformer;
 
-public class MockTransformer extends AbstractTransformer implements Transformer {
+public class MockTransformer extends AbstractTransformer {
 
 	public MockTransformer() {
 		setIncomingClass(String.class);

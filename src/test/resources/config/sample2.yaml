@@ -15,9 +15,7 @@ locator.default:
   pipeline: default
   
 pipeline.default:
-  - mockcollector:
-    test-dir: test/blah
+  - mockcollector
   - mocktransformer
   - mockdispatcher:
-    dispatch.host: ${dispatch.host}
-    assertions: assertions.yaml
+    dispatch-host: ${dispatch.host}

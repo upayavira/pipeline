@@ -1,6 +1,10 @@
-package org.odoko.pipeline.pipelines;
+package org.odoko.pipeline.transformers;
 
 import org.odoko.pipeline.model.Asset;
+import org.odoko.pipeline.model.Asset.AssetState;
+import org.odoko.pipeline.pipelines.AbstractComponent;
+import org.odoko.pipeline.pipelines.Consumer;
+import org.odoko.pipeline.pipelines.PipelineException;
 
 public abstract class AbstractTransformer extends AbstractComponent implements Transformer {
 
@@ -37,17 +41,19 @@ public abstract class AbstractTransformer extends AbstractComponent implements T
 	@Override
 	public void next(Asset asset) {
 		try {
-			if (validate(asset, this.outgoingClass)) {
-				this.nextComponent.consume(asset);
-			} else {
+			if (!validate(asset, this.outgoingClass)) {
 				fail(asset, "asset output is not of type " + outgoingClass.getName());
+				return;
 			}
+			if (this.nextComponent == null) {
+				throw new PipelineException(asset, AssetState.FAILED, getLocation(), "Pipeline not yet wired");
+			}
+			this.nextComponent.consume(asset);
 		} catch (PipelineException e) {
 			e.addLocation(getLocation());
 			throw e;
 		}
 	}
-		
 
 	@Override
 	public void consumeBase(Asset asset) {

@@ -68,7 +68,9 @@ public class YamlConfiguration extends AbstractConfiguration {
 			HashMap map = (HashMap) value;
 			for (String mapKey : (Set<String>)(map.keySet())) {
 				Object mapValue = map.get(mapKey);
-				if (mapValue instanceof String) {
+				if (mapValue instanceof String && mapKey.equals("component")) {
+					component.setName((String)mapValue);
+				} else if (mapValue instanceof String) {
 					component.addProperty(mapKey, (String)mapValue);
 				} else {
 					throw new ConfigurationException("Unexpected property for component " + key + " called " + mapKey);

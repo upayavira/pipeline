@@ -9,6 +9,7 @@ import org.odoko.pipeline.pipelines.AbstractConsumer;
 public class MockDispatcher extends AbstractConsumer implements Dispatcher {
 
 	private List<Asset> assets = new ArrayList<Asset>();
+	private String dispatchHost;
 	
 	public MockDispatcher() {
 		setIncomingClass(String.class);
@@ -22,6 +23,12 @@ public class MockDispatcher extends AbstractConsumer implements Dispatcher {
 	public List<Asset> getDispatchedAssets() {
 	    return assets;	
 	}
-	
 
+	public String getDispatchHost() {
+		return dispatchHost;
+	}
+
+	public void setDispatchHost(String dispatchHost) {
+		this.dispatchHost = dispatchHost;
+	}
 }

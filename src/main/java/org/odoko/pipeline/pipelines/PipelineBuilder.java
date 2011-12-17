@@ -1,8 +1,13 @@
 package org.odoko.pipeline.pipelines;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
 import org.odoko.pipeline.config.Configuration;
 import org.odoko.pipeline.config.ConfigurationException;
 import org.odoko.pipeline.config.ConfiguredComponent;
@@ -29,19 +34,19 @@ public class PipelineBuilder {
 			ConfiguredComponent rootLocator = null;
 			String className = configuredLocator.getClassName();
 			if (className == null) {
-				rootLocator = configuration.getComponent(configuredLocator.getProperty("component"));
+				rootLocator = configuration.getComponent(configuredLocator.getName());
 				className = rootLocator.getClassName();
 			}
 			Class locatorClass = Class.forName(className);
 			Locator locator = (Locator)locatorClass.newInstance();
 			if (rootLocator != null) {
 				for (String name: rootLocator.getProperties().keySet()) {
-					locator.setProperty(name, VariableResolver.resolve(configuration, rootLocator.getProperties().get(name)));
+					setProperty(locator, name, VariableResolver.resolve(configuration, rootLocator.getProperties().get(name)));
 				}
 			}
 			Map<String, String> properties = configuredLocator.getProperties();
 			for (String name : properties.keySet()) {
-				locator.setProperty(name, VariableResolver.resolve(configuration, properties.get(name)));
+				setProperty(locator, name, VariableResolver.resolve(configuration, properties.get(name)));
 			}
 			return locator;
 		} catch (ClassNotFoundException e) {
@@ -65,12 +70,12 @@ public class PipelineBuilder {
 			Component component = (Component)componentClass.newInstance();
 			if (rootComponent != null) {
 				for (String name: rootComponent.getProperties().keySet()) {
-					component.setProperty(name, VariableResolver.resolve(configuration, rootComponent.getProperties().get(name)));
+					setProperty(component, name, VariableResolver.resolve(configuration, rootComponent.getProperties().get(name)));
 				}
 			}
 			Map<String, String> properties = configuredComponent.getProperties();
 			for (String name : properties.keySet()) {
-				component.setProperty(name, VariableResolver.resolve(configuration, properties.get(name)));
+				setProperty(component, name, VariableResolver.resolve(configuration, properties.get(name)));
 			}
 			component.initialise(configuration);
 			component.setLocation(configuredComponent.getName());
@@ -82,5 +87,27 @@ public class PipelineBuilder {
 		} catch (InstantiationException e) {
 			throw new ConfigurationException("Cannot instantiate " + configuredComponent.getClassName());
 		}
+	}
+	
+	private void setProperty(Component component, String name, Object value) throws ConfigurationException {
+		try {
+			String propertyName = getPropertyName(name);
+			PropertyUtils.setSimpleProperty(component, propertyName, value);
+		} catch (IllegalAccessException e) {
+			throw new ConfigurationException("No such property '" + name + "' for " + component.getLocation());
+		} catch (InvocationTargetException e) {
+			throw new ConfigurationException("No such property '" + name + "' for " + component.getLocation());
+		} catch (NoSuchMethodException e) {
+			throw new ConfigurationException("No such property '" + name + "' for " + component.getLocation());
+		}
+	}
+	
+	private String getPropertyName(String name) {
+		StringBuffer buffer = new StringBuffer();
+		for (String part : StringUtils.split(name, "-")) {
+			buffer.append(StringUtils.capitalize(part));
+		}
+		String prop = buffer.toString();
+		return prop.substring(0,1).toLowerCase() + prop.substring(1);
 	}
 }

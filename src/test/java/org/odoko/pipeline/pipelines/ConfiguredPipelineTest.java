@@ -11,6 +11,7 @@ import org.odoko.pipeline.config.ConfigurationException;
 import org.odoko.pipeline.config.YamlConfiguration;
 import org.odoko.pipeline.dispatchers.MockDispatcher;
 import org.odoko.pipeline.locators.Locator;
+import org.odoko.pipeline.locators.MockLocator;
 import org.odoko.pipeline.model.Asset;
 
 public class ConfiguredPipelineTest {
@@ -46,11 +47,11 @@ public class ConfiguredPipelineTest {
 		
 		List<Component> components = pipeline.getComponents(); 
 		MockDispatcher dispatcher = (MockDispatcher)components.get(components.size()-1);
-	    assertEquals("someapp.com", dispatcher.getProperty("dispatchhost")); 
+	    assertEquals("someapp.com", dispatcher.getDispatchHost()); 
 
-	    Locator locator = builder.buildLocator(config, config.getLocator("default"));
-		assertEquals("http://www.somesite.com/feed.rss", locator.getProperty("url"));
-		assertEquals("superduper", locator.getProperty("locatortype"));
+	    MockLocator locator = (MockLocator)builder.buildLocator(config, config.getLocator("default"));
+		assertEquals("http://www.somesite.com/feed.rss", locator.getUrl());
+		assertEquals("superduper", locator.getLocatorType());
 	}
 	
 	@Test
@@ -62,7 +63,6 @@ public class ConfiguredPipelineTest {
 		
 		List<Component> components = pipeline.getComponents(); 
 		MockDispatcher dispatcher = (MockDispatcher)components.get(components.size()-1);
-	    assertEquals("app.odoko.org", dispatcher.getProperty("dispatch.host")); 
-
+	    assertEquals("app.odoko.org", dispatcher.getDispatchHost());
 	}
 }

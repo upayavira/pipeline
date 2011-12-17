@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
+import org.odoko.pipeline.dispatchers.MockDispatcher;
+
 import static org.junit.Assert.assertEquals;
 
 public class YamlConfigurationTest {
@@ -22,7 +24,7 @@ public class YamlConfigurationTest {
 		assertEquals("locator", locator.getType());
 		assertEquals("http://www.somesite.com/feed.rss", locator.getProperty("url"));
 		assertEquals(3, pipelineComponents.size());
-		assertEquals("someapp.com", pipelineComponents.get(2).getProperty("dispatchhost"));
+		assertEquals("someapp.com", pipelineComponents.get(2).getProperty("dispatch-host"));
 	}
 
 }

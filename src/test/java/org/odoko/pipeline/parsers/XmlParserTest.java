@@ -4,7 +4,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import org.odoko.pipeline.model.Asset;
 import org.odoko.pipeline.pipelines.ComponentTest;
-import org.odoko.pipeline.pipelines.Transformer;
+import org.odoko.pipeline.transformers.Transformer;
 import org.w3c.dom.Document;
 
 public class XmlParserTest extends ComponentTest {

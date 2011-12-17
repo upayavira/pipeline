@@ -9,6 +9,9 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
+import org.odoko.pipeline.branchers.Brancher;
+import org.odoko.pipeline.branchers.MockBrancher;
+import org.odoko.pipeline.collectors.MockCollector;
 import org.odoko.pipeline.config.Configuration;
 import org.odoko.pipeline.config.ConfigurationException;
 import org.odoko.pipeline.config.YamlConfiguration;
@@ -16,12 +19,15 @@ import org.odoko.pipeline.dispatchers.MockDispatcher;
 import org.odoko.pipeline.handlers.AssetHandler;
 import org.odoko.pipeline.handlers.UniqueUriAssetHandler;
 import org.odoko.pipeline.locators.Locator;
+import org.odoko.pipeline.locators.MockLocator;
 import org.odoko.pipeline.model.Asset;
+import org.odoko.pipeline.transformers.MockTransformer;
 
 public class BranchingPipelineTest {
 
 	private static final String DB_FILE = "target/database.tmp";
 	private static final String DEFAULT_QUEUE = "default";
+	private static final String SECOND_QUEUE = "queue2";
 
 	@Before
 	public void setUp() {
@@ -33,37 +39,32 @@ public class BranchingPipelineTest {
 
 	@Test
 	public void testBranchingPipeline() throws IOException, ConfigurationException {
-		Configuration config = new YamlConfiguration();
-		config.parse("src/test/resources/config/sample3.yaml");
-		PipelineBuilder builder = new PipelineBuilder();
-		Pipeline pipeline = builder.build(config, config.getPipeline("default"));
-		Pipeline subpipe = builder.build(config, config.getPipeline("subpipe"));
-		
+		Pipeline pipeline1 = new Pipeline();
+		Pipeline pipeline2 = new Pipeline();
+		pipeline1.addComponent(new MockCollector());
+		Brancher brancher = new MockBrancher();
+		brancher.setQueue(SECOND_QUEUE);
+		pipeline1.addComponent(brancher);
+		pipeline1.wire();
+		pipeline2.addComponent(new MockTransformer());
+		MockDispatcher dispatcher = new MockDispatcher();
+		pipeline2.addComponent(dispatcher);
+		pipeline2.wire();
 		AssetHandler handler = new UniqueUriAssetHandler(DB_FILE);
-		pipeline.setHandler(handler);
+		pipeline1.setHandler(handler);
 
-		Locator locator = builder.buildLocator(config, config.getLocator("default"));
+		Locator locator = new MockLocator();
 		
 		handler.addAssets(DEFAULT_QUEUE, locator.locate());
 
-		int i=0;
 		while (handler.hasNext(DEFAULT_QUEUE)) {
-			i++;
-			pipeline.process(handler.nextAsset(DEFAULT_QUEUE));
-		}
-
-		for (String queueName : handler.getQueueNames()) {
-			if (!queueName.equals(DEFAULT_QUEUE)) {
-				int j=0;
-				while (handler.hasNext(queueName)) {
-					j++;
-					subpipe.process(handler.nextAsset(queueName));
-				}
-			}
+			pipeline1.process(handler.nextAsset(DEFAULT_QUEUE));
 		}
 		
-		List<Component> components = subpipe.getComponents(); 
-		MockDispatcher dispatcher = (MockDispatcher)components.get(components.size()-1);
+		while (handler.hasNext(SECOND_QUEUE)) {
+			pipeline2.process(handler.nextAsset(SECOND_QUEUE));
+		}
+		
 		List<Asset> finalAssets = dispatcher.getDispatchedAssets();
 		assertEquals("Incorrect number of assets dispatched", 10, finalAssets.size());
 		assertEquals("First asset not text/plain", "text/plain", finalAssets.get(0).getContentType());

@@ -1,7 +1,7 @@
 package org.odoko.pipeline.collectors;
 
 import org.odoko.pipeline.model.Asset;
-import org.odoko.pipeline.pipelines.AbstractTransformer;
+import org.odoko.pipeline.transformers.AbstractTransformer;
 
 public class MockCollector extends AbstractTransformer implements Collector {
 

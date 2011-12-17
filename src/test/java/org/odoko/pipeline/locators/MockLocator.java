@@ -9,6 +9,10 @@ import org.odoko.pipeline.pipelines.AbstractProducer;
 public class MockLocator extends AbstractProducer implements Locator {
 
 	private static final String URI_PREFIX = "http://www.odoko.org/article-"; 
+	
+	private String url;
+	private String locatorType;
+	
 	@Override
 	public List<Asset> locate() {
 		List<Asset>assets = new ArrayList<Asset>();
@@ -20,4 +24,22 @@ public class MockLocator extends AbstractProducer implements Locator {
 		}
 		return assets;
 	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getLocatorType() {
+		return locatorType;
+	}
+
+	public void setLocatorType(String locatorType) {
+		this.locatorType = locatorType;
+	}
+	
+	
 }

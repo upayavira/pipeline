@@ -12,6 +12,7 @@ import org.odoko.pipeline.locators.Locator;
 import org.odoko.pipeline.locators.MockLocator;
 import org.odoko.pipeline.model.Asset;
 import org.odoko.pipeline.transformers.MockTransformer;
+import org.odoko.pipeline.transformers.Transformer;
 
 public class SimplePipelineTest {
 

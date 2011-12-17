@@ -11,13 +11,16 @@ import javax.xml.transform.dom.DOMSource;
 import org.odoko.pipeline.config.Configuration;
 import org.odoko.pipeline.config.ConfigurationException;
 import org.odoko.pipeline.model.Asset;
-import org.odoko.pipeline.pipelines.AbstractTransformer;
 import org.w3c.dom.Document;
 
 public class XsltTransformer extends AbstractTransformer {
 
 	private Transformer transformer;
-	
+	private String xslt = null;
+	public void setXslt(String xslt) {
+		this.xslt = xslt;
+	}
+
 	@Override
 	public void initialise(Configuration config) throws ConfigurationException {
 		super.initialise(config);
@@ -25,7 +28,6 @@ public class XsltTransformer extends AbstractTransformer {
 		setOutgoingClass(Document.class);
 		
 		try {
-			String xslt = getProperty("xslt");
 			TransformerFactory tFactory = TransformerFactory.newInstance();
 			DocumentBuilderFactory dFactory = DocumentBuilderFactory.newInstance(); 
 			dFactory.setNamespaceAware(true);

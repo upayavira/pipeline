@@ -5,8 +5,6 @@ import org.odoko.pipeline.config.ConfigurationException;
 import org.odoko.pipeline.model.Asset;
 
 public interface Component {
-	public void setProperty(String name, String value);
-	public String getProperty(String string);
 	public Pipeline getPipeline();
 	public void setPipeline(Pipeline pipeline);
 	public String getLocation();
