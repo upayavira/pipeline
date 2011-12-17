@@ -1,4 +1,4 @@
-package org.odoko.pipeline.parsers;
+package org.odoko.pipeline.transformers;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;

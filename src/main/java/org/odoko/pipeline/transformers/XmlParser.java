@@ -1,4 +1,4 @@
-package org.odoko.pipeline.parsers;
+package org.odoko.pipeline.transformers;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -10,7 +10,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.odoko.pipeline.config.Configuration;
 import org.odoko.pipeline.config.ConfigurationException;
 import org.odoko.pipeline.model.Asset;
-import org.odoko.pipeline.transformers.AbstractTransformer;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
