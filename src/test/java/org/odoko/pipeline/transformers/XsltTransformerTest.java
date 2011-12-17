@@ -8,11 +8,11 @@ import javax.xml.parsers.DocumentBuilder;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import org.odoko.pipeline.model.Asset;
-import org.odoko.pipeline.pipelines.ComponentTest;
+import org.odoko.pipeline.pipelines.AbstractComponentTest;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-public class XsltTransformerTest extends ComponentTest {
+public class XsltTransformerTest extends AbstractComponentTest {
 
 	private String XML = "<xml><a foo='bar'/></xml>";
 	

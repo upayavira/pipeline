@@ -3,11 +3,11 @@ package org.odoko.pipeline.parsers;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import org.odoko.pipeline.model.Asset;
-import org.odoko.pipeline.pipelines.ComponentTest;
+import org.odoko.pipeline.pipelines.AbstractComponentTest;
 import org.odoko.pipeline.transformers.Transformer;
 import org.w3c.dom.Document;
 
-public class XmlParserTest extends ComponentTest {
+public class XmlParserTest extends AbstractComponentTest {
 
 	private String XML = "<xml><a foo='bar'/></xml>";
 	

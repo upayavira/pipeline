@@ -1,5 +1,6 @@
 package org.odoko.pipeline.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Asset {
@@ -16,7 +17,8 @@ public class Asset {
 	private String contentType;
 	private String uri;
 	private Object value;
-	private Map<String, Payload> payloads;
+	private Map<String, Payload> payloads = new HashMap<String, Payload>();
+	private Map<String, String> properties = new HashMap<String, String>();
 	private AssetState state = AssetState.NEW;
 	
 	public void setState(AssetState state) {
@@ -63,5 +65,11 @@ public class Asset {
 		payloads.put(name, payload);
 	}
 	
+	public void setProperty(String name, String value) {
+		this.properties.put(name, value);
+	}
 	
+	public String getProperty(String name) {
+		return this.properties.get(name);
+	}
 }
